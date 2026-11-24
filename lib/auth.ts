@@ -2,15 +2,21 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 
-const client = new MongoClient(process.env.MONGODB_URI as string);
+const rawUri = process.env.MONGODB_URI ?? "";
+const uri = rawUri
+  .trim()
+  .replace(/^MONGODB_URI=/, "")
+  .replace(/^["']|["']$/g, "");
+
+if (!uri.startsWith("mongodb")) {
+  throw new Error(
+    `MONGODB_URI invalid. length=${rawUri.length}, starts with: "${rawUri.slice(0, 8)}"`
+  );
+}
+
+const client = new MongoClient(uri);
 
 export const auth = betterAuth({
   database: mongodbAdapter(client.db("studiospace_auth")),
-  emailAndPassword: { enabled: true },
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    },
-  },
+  // ... তোমার বাকি config যেমন ছিল
 });

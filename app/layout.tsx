@@ -9,7 +9,11 @@ export const metadata: Metadata = {
   description: "Book creative studios by the hour",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <body>
